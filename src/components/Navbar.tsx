@@ -64,7 +64,7 @@ const Navbar = () => {
             <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background animate-pulse-glow" />
           </div>
           <span className="font-heading font-bold text-base md:text-lg text-foreground tracking-tight">
-            e&#8209;com<span className="text-primary">designs</span>hub
+            E&#8209;com<span className="text-primary">designs</span>hub
           </span>
         </Link>
 

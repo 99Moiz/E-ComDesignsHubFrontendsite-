@@ -21,7 +21,7 @@ const FloatingActions = () => {
             transition={{ duration: 0.2 }}
             className="flex flex-col items-end gap-3 max-w-[240px]"
           >
-            <a
+            {/* <a
               href={BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
@@ -31,7 +31,7 @@ const FloatingActions = () => {
                 <Phone size={16} />
               </span>
               <span>Book a free call</span>
-            </a>
+            </a> */}
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
               target="_blank"

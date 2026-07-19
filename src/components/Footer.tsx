@@ -44,7 +44,7 @@ const Footer = () => {
             <div className="flex items-center gap-2 mb-4">
               <img src="/images/logo.jpeg" alt="E-ComDesignsHub" className="h-10 w-10 rounded-xl object-cover ring-1 ring-white/10" />
               <span className="font-heading font-bold text-lg text-foreground">
-                e&#8209;com<span className="text-primary">designs</span>hub
+                E&#8209;com<span className="text-primary">designs</span>hub
               </span>
             </div>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
