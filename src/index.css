@@ -1,0 +1,324 @@
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Space+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 165 40% 3.2%;
+    --foreground: 45 28% 96%;
+
+    --card: 165 22% 7%;
+    --card-foreground: 45 28% 96%;
+
+    --popover: 165 24% 6%;
+    --popover-foreground: 45 28% 96%;
+
+    --primary: 158 72% 46%;
+    --primary-foreground: 165 40% 4%;
+
+    --secondary: 160 14% 11%;
+    --secondary-foreground: 45 20% 92%;
+
+    --muted: 160 12% 12%;
+    --muted-foreground: 152 8% 62%;
+
+    --accent: 40 92% 62%;
+    --accent-foreground: 165 40% 4%;
+
+    --destructive: 0 74% 58%;
+    --destructive-foreground: 45 28% 96%;
+
+    --border: 160 14% 13%;
+    --input: 160 14% 13%;
+    --ring: 158 72% 46%;
+
+    --radius: 0.9rem;
+
+    --sidebar-background: 165 22% 5.5%;
+    --sidebar-foreground: 45 20% 94%;
+    --sidebar-primary: 158 72% 46%;
+    --sidebar-primary-foreground: 165 40% 4%;
+    --sidebar-accent: 160 14% 11%;
+    --sidebar-accent-foreground: 45 20% 90%;
+    --sidebar-border: 160 14% 13%;
+    --sidebar-ring: 158 72% 46%;
+
+    /* Custom tokens */
+    --glow: 158 78% 52%;
+    --surface: 165 20% 6.5%;
+    --surface-hover: 165 18% 10%;
+    --line: 160 14% 14%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Lenis drives scrolling; keep as graceful fallback only */
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-normal;
+    letter-spacing: -0.01em;
+  }
+
+  /* Lenis */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
+}
+
+@layer utilities {
+  .font-mono-label {
+    font-family: 'Space Mono', monospace;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, hsl(var(--primary)), hsl(158 80% 68%));
+  }
+
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+
+  .glow-green {
+    box-shadow: 0 0 24px hsl(var(--primary) / 0.35), 0 0 70px hsl(var(--primary) / 0.12);
+  }
+  .glow-green-sm {
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.22), 0 0 32px hsl(var(--primary) / 0.08);
+  }
+  .glow-gold-sm {
+    box-shadow: 0 0 12px hsl(var(--accent) / 0.25), 0 0 32px hsl(var(--accent) / 0.08);
+  }
+
+  .glass {
+    @apply bg-card/50 backdrop-blur-2xl border border-white/[0.06];
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.04), 0 8px 32px -8px hsl(0 0% 0% / 0.5);
+  }
+
+  .section-padding {
+    @apply py-16 sm:py-20 md:py-28 lg:py-36;
+  }
+
+  .eyebrow {
+    @apply font-mono-label text-xs uppercase tracking-[0.25em] text-primary/90;
+  }
+
+  /* Faint dotted grid used behind hero / section decorations */
+  .bg-grid-pattern {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  /* Subtle gradient hairline border for premium cards / CTAs */
+  .gradient-border {
+    position: relative;
+    isolation: isolate;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(140deg, hsl(var(--primary) / 0.5), hsl(var(--accent) / 0.35), transparent 65%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Shine sweep on hover, used on primary CTAs */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, hsl(0 0% 100% / 0.3), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.7s ease;
+  }
+  .btn-shine:hover::after {
+    left: 130%;
+  }
+
+  /* Underline sweep for text links */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .hover-glow-line {
+    position: relative;
+  }
+
+  /* ---- Sheryians-style interactions ---- */
+
+  /* Two-line swipe-up text used on nav links: wrap label in
+     <span class="nav-swipe"><span class="nav-swipe-inner"><span>Label</span><span>Label</span></span></span> */
+  .nav-swipe {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.1em;
+    line-height: 1.1em;
+    vertical-align: bottom;
+  }
+  .nav-swipe-inner {
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  .group:hover .nav-swipe-inner,
+  a:hover .nav-swipe-inner {
+    transform: translateY(-1.1em);
+  }
+
+  /* Bold pill CTA with a sliding arrow badge, filled variant */
+  .btn-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 0.65rem 0.65rem 1.5rem;
+    border-radius: 9999px;
+    font-family: theme('fontFamily.body');
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.01em;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    overflow: hidden;
+    isolation: isolate;
+    transition: box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-pill:hover {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.4), 0 0 80px hsl(var(--primary) / 0.15);
+    transform: translateY(-2px);
+  }
+  .btn-pill .btn-pill-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 9999px;
+    background: hsl(var(--primary-foreground) / 0.14);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+    flex-shrink: 0;
+  }
+  .btn-pill:hover .btn-pill-arrow {
+    transform: rotate(45deg) scale(1.05);
+    background: hsl(var(--primary-foreground) / 0.22);
+  }
+
+  /* Outline variant of the same pill, for secondary CTAs on dark/glass backgrounds */
+  .btn-pill-outline {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.6rem 0.6rem 1.4rem;
+    border-radius: 9999px;
+    border: 1px solid hsl(var(--border));
+    font-family: theme('fontFamily.body');
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: hsl(var(--foreground));
+    background: hsl(var(--foreground) / 0.02);
+    transition: border-color 0.3s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+  }
+  .btn-pill-outline:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    background: hsl(var(--primary) / 0.06);
+    transform: translateY(-2px);
+  }
+  .btn-pill-outline .btn-pill-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    background: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+  }
+  .btn-pill-outline:hover .btn-pill-arrow {
+    transform: rotate(45deg) scale(1.05);
+  }
+}
+
+/* Selection color */
+::selection {
+  background: hsl(var(--primary) / 0.32);
+  color: hsl(var(--foreground));
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb {
+  background: hsl(158 12% 20%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary)); }
+
+/* Hide native cursor only on fine-pointer devices when custom cursor active */
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor [role="button"] {
+    cursor: none;
+  }
+}
+
+/* Respect reduced motion: neutralize non-essential animation */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
