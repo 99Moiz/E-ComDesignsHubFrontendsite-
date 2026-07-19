@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // TODO: replace with your real WhatsApp number (with country code, no + or spaces)
 // and your real booking link (Calendly, Cal.com, etc.)
-const WHATSAPP_NUMBER = "10000000000";
+const WHATSAPP_NUMBER = "03020230467";
 const BOOKING_URL = "https://calendly.com/your-team/intro-call";
 
 const FloatingActions = () => {
