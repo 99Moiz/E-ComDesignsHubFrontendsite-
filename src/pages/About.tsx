@@ -1,186 +1,147 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Target, Eye, Heart, Award, Users, Lightbulb } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Target, Eye, Heart, Award, Users, Lightbulb, ArrowRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import TeamSection from "@/components/TeamSection";
-import ScrollReveal from "@/components/ScrollReveal";
-import TextReveal from "@/components/motion/TextReveal";
-import Spotlight from "@/components/motion/Spotlight";
-import FloatingShapes from "@/components/motion/FloatingShapes";
-import Parallax from "@/components/motion/Parallax";
-import TiltCard from "@/components/motion/TiltCard";
-import { Stagger, StaggerItem } from "@/components/motion/Stagger";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import PageHeader from "@/components/PageHeader";
+import SectionHeading from "@/components/SectionHeading";
+import { Reveal, RevealGroup, RevealItem, CountUp } from "@/components/Reveal";
 
 const values = [
-  { icon: <Lightbulb size={22} />, title: "Innovation", description: "Pushing boundaries with creative solutions and emerging technologies." },
-  { icon: <Users size={22} />, title: "Collaboration", description: "Working closely with clients as true partners in every project." },
-  { icon: <Award size={22} />, title: "Excellence", description: "Delivering premium quality in every pixel and line of code." },
-  { icon: <Heart size={22} />, title: "Passion", description: "Driven by genuine love for craft and meaningful digital work." },
+  { Icon: Lightbulb, title: "Innovation", description: "Pushing boundaries with creative solutions and emerging technologies." },
+  { Icon: Users, title: "Collaboration", description: "Working closely with clients as true partners in every project." },
+  { Icon: Award, title: "Excellence", description: "Delivering premium quality in every pixel and line of code." },
+  { Icon: Heart, title: "Passion", description: "Driven by genuine love for the craft and meaningful digital work." },
 ];
 
 const timeline = [
   { year: "2018", title: "Founded", description: "Started with a vision to create exceptional digital experiences." },
-  { year: "2019", title: "First Major Client", description: "Delivered a breakthrough project that set our standard for quality." },
-  { year: "2021", title: "Team Expansion", description: "Grew to 20+ talented professionals across design and engineering." },
-  { year: "2023", title: "Global Reach", description: "Expanded services to clients across 15+ countries worldwide." },
-  { year: "2025", title: "Industry Recognition", description: "Awarded for excellence in digital innovation and design." },
+  { year: "2019", title: "First major client", description: "Delivered a breakthrough project that set our standard for quality." },
+  { year: "2021", title: "Team expansion", description: "Grew to 20+ professionals across design and engineering." },
+  { year: "2023", title: "Global reach", description: "Expanded services to clients across 15+ countries worldwide." },
+  { year: "2025", title: "Industry recognition", description: "Awarded for excellence in digital innovation and design." },
 ];
 
-const Timeline = () => {
-  const reduced = usePrefersReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 60%", "end 80%"] });
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+const facts = [
+  { value: "2018", label: "Founded" },
+  { value: "20+", label: "Team members" },
+  { value: "15+", label: "Countries served" },
+  { value: "200+", label: "Projects delivered" },
+];
 
-  return (
-    <div ref={ref} className="relative mx-auto max-w-3xl">
-      <div className="absolute bottom-0 left-4 top-2 w-px bg-line md:left-1/2 md:-translate-x-px">
-        <motion.div
-          className="h-full w-full origin-top bg-gradient-to-b from-primary to-accent"
-          style={reduced ? { scaleY: 1 } : { scaleY }}
-        />
-      </div>
-      {timeline.map((item, i) => (
-        <ScrollReveal key={item.year} direction={i % 2 === 0 ? "left" : "right"} delay={i * 0.05}>
-          <div className={`relative pb-14 pl-12 last:pb-0 md:pl-0 ${i % 2 === 0 ? "md:pr-[55%]" : "md:pl-[55%]"}`}>
-            <div className="absolute left-2 top-1.5 h-4 w-4 rounded-full border-2 border-background bg-primary glow-green-sm md:left-1/2 md:-translate-x-1/2" />
-            <TiltCard max={5} className="group cursor-hover">
-              <div className="rounded-xl border border-line bg-card p-5 transition-colors duration-300 hover:border-primary/30">
-                <span className="font-mono text-sm font-bold text-primary">{item.year}</span>
-                <h4 className="mt-1 font-heading font-semibold">{item.title}</h4>
-                <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
-              </div>
-            </TiltCard>
+const About = () => (
+  <Layout>
+    <SEO
+      title="About Us"
+      description="Meet the team behind E-ComDesignsHub, a hands-on studio building websites and digital experiences that drive real growth."
+      path="/about"
+    />
+    <PageHeader
+      crumb="About us"
+      title="A team of designers, developers and marketers."
+      intro="E-ComDesignsHub is a digital agency dedicated to transforming brands through web solutions, compelling design and data-driven strategies."
+    />
+
+    {/* Intro + facts */}
+    <section className="section">
+      <div className="container grid gap-12 lg:grid-cols-12">
+        <Reveal className="lg:col-span-7">
+          <h2 className="heading-bar font-heading text-3xl font-semibold sm:text-4xl">Who we are</h2>
+          <div className="mt-6 max-w-2xl space-y-5 text-[1.05rem] leading-relaxed text-muted-foreground">
+            <p>
+              We started in 2018 as a small studio with one goal: build websites that look good and actually work for
+              the business behind them. Since then we have grown into a full-service team covering design,
+              development, SEO and marketing.
+            </p>
+            <p>
+              We treat every brand like our own, and we obsess over the details that turn a good product into one
+              people remember and come back to.
+            </p>
           </div>
-        </ScrollReveal>
-      ))}
-    </div>
-  );
-};
-
-const About = () => {
-  return (
-    <Layout>
-      <SEO
-        title="About Us"
-        description="Meet the team behind E-ComDesignsHub — a senior, hands-on studio building premium websites and digital experiences that drive real growth."
-        path="/about"
-      />
-      {/* Hero */}
-      <section className="relative overflow-hidden section-padding">
-        <Spotlight size={560} opacity={0.13} />
-        <FloatingShapes variant="mixed" />
-        <div className="absolute inset-0 bg-grid-pattern opacity-50" />
-        <div className="container relative mx-auto">
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="eyebrow mb-6"
-          >
-            About us
-          </motion.p>
-          <h1 className="max-w-4xl font-heading text-3xl font-normal leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-            <TextReveal text="We're a team of" as="span" className="block" />
-            <TextReveal text="digital craftsmen." as="span" className="block" highlight={["digital", "craftsmen."]} delay={0.12} />
-          </h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground"
-          >
-            E-ComDesignsHub is a premium digital agency dedicated to transforming brands through
-            innovative web solutions, compelling design, and data-driven strategies.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* Mission & Vision */}
-      <section className="section-padding border-y border-line">
-        <div className="container mx-auto grid gap-6 md:grid-cols-2">
-          {[
-            { Icon: Target, title: "Our Mission", tint: "primary", body: "To empower businesses with premium digital solutions that drive meaningful growth, foster engagement, and create lasting impressions in the digital landscape." },
-            { Icon: Eye, title: "Our Vision", tint: "accent", body: "To be the most trusted digital agency globally, known for setting new standards of excellence in design, technology, and client partnership." },
-          ].map(({ Icon, title, tint, body }, i) => (
-            <ScrollReveal key={title} direction={i === 0 ? "left" : "right"}>
-              <TiltCard max={5} className="group h-full cursor-hover">
-                <div className="gradient-border h-full rounded-2xl bg-card p-8">
-                  <div className={`mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${tint === "primary" ? "bg-primary/10 text-primary" : "bg-accent/10 text-accent"}`}>
-                    <Icon size={24} />
-                  </div>
-                  <h3 className="mb-3 font-heading text-xl font-semibold">{title}</h3>
-                  <p className="leading-relaxed text-muted-foreground">{body}</p>
-                </div>
-              </TiltCard>
-            </ScrollReveal>
+        </Reveal>
+        <RevealGroup as="dl" className="grid grid-cols-2 gap-px self-start overflow-hidden rounded-md border border-line bg-line lg:col-span-5">
+          {facts.map((f) => (
+            <RevealItem key={f.label} className="bg-white p-6">
+              <dt className="text-sm text-muted-foreground">{f.label}</dt>
+              <dd className="mt-1 font-heading text-4xl font-semibold">
+                {f.label === "Founded" ? f.value : <CountUp value={f.value} />}
+              </dd>
+            </RevealItem>
           ))}
-        </div>
-      </section>
+        </RevealGroup>
+      </div>
+    </section>
 
-      {/* Values */}
-      <section className="section-padding">
-        <div className="container mx-auto">
-          <ScrollReveal>
-            <div className="mb-16">
-              <p className="eyebrow mb-4">Our values</p>
-              <h2 className="font-heading text-3xl font-normal leading-[1.1] sm:text-4xl md:text-5xl">
-                What <span className="text-gradient">drives us</span>
-              </h2>
-            </div>
-          </ScrollReveal>
-          <Stagger className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((val, i) => (
-              <StaggerItem key={val.title}>
-                <TiltCard max={8} className={`group h-full cursor-hover ${i % 2 === 1 ? "lg:mt-8" : ""}`}>
-                  <div className="h-full rounded-2xl border border-line bg-card p-6 transition-colors duration-300 hover:border-primary/30">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-shadow duration-300 group-hover:glow-green-sm">
-                      {val.icon}
-                    </div>
-                    <h4 className="mb-2 font-heading font-semibold">{val.title}</h4>
-                    <p className="text-sm text-muted-foreground">{val.description}</p>
-                  </div>
-                </TiltCard>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
+    {/* Mission & vision */}
+    <section className="section bg-mist">
+      <RevealGroup stagger={0.12} className="container grid gap-6 md:grid-cols-2">
+        {[
+          {
+            Icon: Target,
+            title: "Our mission",
+            body: "To empower businesses with digital solutions that drive meaningful growth, foster engagement, and create lasting impressions.",
+          },
+          {
+            Icon: Eye,
+            title: "Our vision",
+            body: "To be one of the most trusted digital agencies globally, known for high standards in design, technology and client partnership.",
+          },
+        ].map(({ Icon, title, body }) => (
+          <RevealItem key={title} className="rounded-md border border-line border-t-4 border-t-primary bg-white p-8 transition-shadow duration-300 hover:shadow-[0_20px_40px_-24px_rgba(27,31,36,0.35)] md:p-10">
+            <Icon size={30} className="text-moss" />
+            <h3 className="mt-5 font-heading text-3xl font-semibold">{title}</h3>
+            <p className="mt-3 text-[1.05rem] leading-relaxed text-muted-foreground">{body}</p>
+          </RevealItem>
+        ))}
+      </RevealGroup>
+    </section>
 
-      {/* Big statement / parallax */}
-      <section className="relative overflow-hidden border-y border-line section-padding">
-        <div className="container mx-auto">
-          <Parallax speed={40}>
-            <ScrollReveal>
-              <p className="mx-auto max-w-4xl text-center font-heading text-2xl font-bold leading-snug md:text-4xl">
-                We treat every brand like our own — obsessing over the details that turn a good product
-                into an <span className="text-gradient">unforgettable one.</span>
-              </p>
-            </ScrollReveal>
-          </Parallax>
-        </div>
-      </section>
+    {/* Values */}
+    <section className="section">
+      <div className="container">
+        <SectionHeading title="What drives us" intro="Four principles guide how we hire, how we work and how we treat clients." />
+        <RevealGroup className="grid gap-px overflow-hidden rounded-md border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+          {values.map(({ Icon, title, description }) => (
+            <RevealItem key={title} className="group bg-white p-7 transition-colors hover:bg-mist">
+              <span className="grid h-12 w-12 place-items-center rounded-md bg-mist text-moss transition-colors group-hover:bg-primary group-hover:text-foreground">
+                <Icon size={22} />
+              </span>
+              <h3 className="mt-5 font-heading text-2xl font-semibold">{title}</h3>
+              <p className="mt-2 leading-relaxed text-muted-foreground">{description}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
+    </section>
 
-      {/* Timeline */}
-      <section className="section-padding">
-        <div className="container mx-auto">
-          <ScrollReveal>
-            <div className="mb-16 text-center">
-              <p className="eyebrow mb-4">Our journey</p>
-              <h2 className="font-heading text-3xl font-normal leading-[1.1] sm:text-4xl md:text-5xl">
-                Growing <span className="text-gradient">together</span>
-              </h2>
-            </div>
-          </ScrollReveal>
-          <Timeline />
-        </div>
-      </section>
+    {/* Timeline */}
+    <section className="section bg-graphite text-white">
+      <div className="container">
+        <SectionHeading tone="light" title="Our journey" intro="Key milestones since the studio opened its doors." />
+        <RevealGroup as="ol" stagger={0.12} className="grid gap-8 md:grid-cols-5 md:gap-6">
+          {timeline.map((item) => (
+            <RevealItem as="li" key={item.year} className="border-t-2 border-primary pt-5">
+              <span className="font-heading text-3xl font-semibold text-primary">{item.year}</span>
+              <h3 className="mt-2 font-body text-lg font-semibold text-white">{item.title}</h3>
+              <p className="mt-2 text-[0.95rem] leading-relaxed text-white/65">{item.description}</p>
+            </RevealItem>
+          ))}
+        </RevealGroup>
+      </div>
+    </section>
 
-      {/* <TeamSection /> */}
-    </Layout>
-  );
-};
+    {/* Careers link */}
+    <section className="section">
+      <Reveal className="container flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+        <div>
+          <h2 className="font-heading text-3xl font-semibold">Want to work with us?</h2>
+          <p className="mt-2 text-muted-foreground">We're always looking for people who care about good work.</p>
+        </div>
+        <Link to="/careers" className="btn-outline">
+          See open positions <ArrowRight size={17} />
+        </Link>
+      </Reveal>
+    </section>
+  </Layout>
+);
 
 export default About;

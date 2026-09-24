@@ -1,5 +1,5 @@
+import { Reveal } from "@/components/Reveal";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import ScrollReveal from "@/components/ScrollReveal";
 
 const faqs = [
   {
@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     q: "Do you offer ongoing support after launch?",
-    a: "Yes — we offer monthly maintenance retainers that cover updates, backups, security monitoring, and small content changes, plus priority turnaround if something breaks.",
+    a: "Yes. We offer monthly maintenance retainers that cover updates, backups, security monitoring, and small content changes, plus priority turnaround if something breaks.",
   },
   {
     q: "Can you work with our existing brand guidelines?",
@@ -25,31 +25,26 @@ const faqs = [
 ];
 
 const FAQ = () => (
-  <section className="section-padding border-t border-line">
-    <div className="container mx-auto max-w-3xl">
-      <ScrollReveal>
-        <div className="mb-12 text-center">
-          <p className="eyebrow mb-4">FAQ</p>
-          <h2 className="font-heading text-3xl font-normal leading-[1.1] sm:text-4xl md:text-5xl">
-            Questions, <span className="text-gradient">answered</span>
-          </h2>
-        </div>
-      </ScrollReveal>
-
-      <ScrollReveal delay={0.1}>
-        <Accordion type="single" collapsible className="w-full">
-          {faqs.map((item, i) => (
-            <AccordionItem key={item.q} value={`item-${i}`} className="border-line">
-              <AccordionTrigger className="text-left font-heading text-base font-medium hover:text-primary hover:no-underline">
-                {item.q}
-              </AccordionTrigger>
-              <AccordionContent className="leading-relaxed text-muted-foreground">
-                {item.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </ScrollReveal>
+  <section className="section">
+    <div className="container grid gap-10 lg:grid-cols-12">
+      <Reveal className="lg:col-span-4">
+        <h2 className="heading-bar font-heading text-3xl font-semibold sm:text-4xl md:text-[2.75rem]">
+          Frequently asked questions
+        </h2>
+        <p className="mt-4 text-muted-foreground">Can't find what you're looking for? Send us a message and we'll answer it directly.</p>
+      </Reveal>
+      <Reveal delay={0.1} className="lg:col-span-8">
+      <Accordion type="single" collapsible>
+        {faqs.map((item, i) => (
+          <AccordionItem key={item.q} value={`item-${i}`} className="border-line">
+            <AccordionTrigger className="py-5 text-left font-body text-[1.05rem] font-semibold hover:text-moss hover:no-underline">
+              {item.q}
+            </AccordionTrigger>
+            <AccordionContent className="pb-5 text-[1rem] leading-relaxed text-muted-foreground">{item.a}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+      </Reveal>
     </div>
   </section>
 );

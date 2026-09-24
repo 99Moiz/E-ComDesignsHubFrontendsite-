@@ -1,71 +1,34 @@
-import { useState } from "react";
-import { MessageCircle, Phone, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
+import { MessageCircle } from "lucide-react";
+import { SITE } from "@/lib/site";
 
-// TODO: replace with your real WhatsApp number (with country code, no + or spaces)
-// and your real booking link (Calendly, Cal.com, etc.)
-const WHATSAPP_NUMBER = "03020230467";
-const BOOKING_URL = "https://calendly.com/your-team/intro-call";
-
+/** WhatsApp shortcut, fixed bottom-right. Appears once the visitor scrolls past the hero. */
 const FloatingActions = () => {
-  const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 480);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3 md:bottom-8 md:right-8">
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="flex flex-col items-end gap-3 max-w-[240px]"
-          >
-            {/* <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass group flex items-center gap-3 rounded-full border border-line bg-card/80 px-4 py-3 text-sm font-medium shadow-lg shadow-black/10 transition duration-300 hover:border-primary/40"
-            >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
-                <Phone size={16} />
-              </span>
-              <span>Book a free call</span>
-            </a> */}
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass group flex items-center gap-3 rounded-full border border-line bg-card/80 px-4 py-3 text-sm font-medium shadow-lg shadow-black/10 transition duration-300 hover:border-primary/40"
-            >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#25D366]/15 text-[#25D366] transition-colors group-hover:bg-[#25D366]/20">
-                <MessageCircle size={16} />
-              </span>
-              <span>Chat on WhatsApp</span>
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close contact options" : "Open contact options"}
-        aria-expanded={open}
-        className="glass grid h-14 w-14 place-items-center rounded-full border border-line bg-card/90 shadow-lg shadow-black/10 transition duration-300 hover:border-primary/40 hover:glow-green focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25"
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          {open ? (
-            <motion.span key="close" initial={{ rotate: -45, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 45, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <X size={20} className="text-foreground" />
-            </motion.span>
-          ) : (
-            <motion.span key="chat" initial={{ rotate: 45, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -45, opacity: 0 }} transition={{ duration: 0.15 }}>
-              <MessageCircle size={20} className="text-primary" />
-            </motion.span>
-          )}
-        </AnimatePresence>
-      </button>
-    </div>
+    <a
+      href={`https://wa.me/${SITE.whatsapp}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat with us on WhatsApp"
+      tabIndex={visible ? 0 : -1}
+      className={`group fixed bottom-5 right-5 z-40 flex h-14 items-center overflow-hidden rounded-full bg-[#25D366] px-4 text-white shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)] transition-[background-color,opacity,transform] duration-300 hover:bg-[#1EBE5A] md:bottom-8 md:right-8 ${
+        visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+      }`}
+    >
+      <MessageCircle size={24} />
+      <span className="max-w-0 overflow-hidden whitespace-nowrap text-[0.95rem] font-semibold transition-[max-width,margin] duration-300 group-hover:ml-2 group-hover:max-w-[160px] group-focus-visible:ml-2 group-focus-visible:max-w-[160px]">
+        Chat on WhatsApp
+      </span>
+    </a>
   );
 };
 

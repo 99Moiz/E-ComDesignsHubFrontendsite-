@@ -1,69 +1,80 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import ScrollReveal from "@/components/ScrollReveal";
-import TiltCard from "@/components/motion/TiltCard";
-import Spotlight from "@/components/motion/Spotlight";
-import TextReveal from "@/components/motion/TextReveal";
+import PageHeader from "@/components/PageHeader";
 import { blogPosts } from "@/data/blog";
+import { Reveal, RevealGroup, RevealItem } from "@/components/Reveal";
 
-const Blog = () => (
-  <Layout>
-    <SEO
-      title="Blog"
-      description="Practical, no-fluff writing on web design, performance, and SEO from the E-ComDesignsHub team."
-      path="/blog"
-    />
+const fmt = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-    <section className="relative overflow-hidden pt-20 md:pt-28 pb-16 px-5 md:px-8">
-      <Spotlight color="var(--primary)" size={620} opacity={0.12} />
-      <div className="bg-grid-pattern absolute inset-0 opacity-[0.35]" />
-      <div className="container relative mx-auto">
-        <p className="eyebrow mb-6">/ 05 — Insights</p>
-        <TextReveal
-          as="h1"
-          text="Notes on design, speed, and search."
-          highlight={["speed"]}
-          className="max-w-3xl font-heading text-3xl font-normal leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
-        />
-        <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
-          Practical write-ups from projects we've shipped — no fluff, no filler.
-        </p>
-      </div>
-    </section>
+const Blog = () => {
+  const [featured, ...rest] = blogPosts;
 
-    <section className="px-5 md:px-8 pb-28">
-      <div className="container mx-auto grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {blogPosts.map((post, i) => (
-          <ScrollReveal key={post.slug} delay={i * 0.08}>
-            <TiltCard max={6} className="h-full cursor-hover">
-              <Link
-                to={`/blog/${post.slug}`}
-                className="group flex h-full flex-col rounded-2xl border border-line bg-card p-6 transition-colors duration-300 hover:border-primary/30"
-              >
-                <span className="mb-4 w-fit rounded-full border border-line px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary">
-                  {post.category}
+  return (
+    <Layout>
+      <SEO
+        title="Blog"
+        description="Practical writing on web design, performance, and SEO from the E-ComDesignsHub team."
+        path="/blog"
+      />
+      <PageHeader
+        crumb="Blog"
+        title="Insights on design, speed and search."
+        intro="Practical write-ups from projects we've shipped."
+      />
+
+      <section className="section">
+        <div className="container">
+          {featured && (
+            <Reveal>
+            <Link
+              to={`/blog/${featured.slug}`}
+              className="group mb-14 grid gap-6 rounded-md border border-line bg-mist p-8 transition-colors hover:border-foreground/30 md:grid-cols-12 md:p-12"
+            >
+              <div className="md:col-span-8">
+                <p className="text-sm font-semibold text-moss">Latest article <span className="mx-2 text-foreground/25">|</span> {featured.category}</p>
+                <h2 className="mt-3 font-heading text-3xl font-semibold leading-tight transition-colors group-hover:text-moss md:text-4xl">
+                  {featured.title}
+                </h2>
+                <p className="mt-4 max-w-2xl text-[1.05rem] leading-relaxed text-muted-foreground">{featured.excerpt}</p>
+              </div>
+              <div className="flex flex-col justify-between gap-4 md:col-span-4 md:items-end">
+                <p className="text-sm text-muted-foreground md:text-right">
+                  {fmt(featured.date)}
+                  <br />
+                  {featured.readTime}
+                </p>
+                <span className="inline-flex items-center gap-1.5 font-semibold">
+                  Read article <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
                 </span>
-                <h2 className="font-heading text-lg font-semibold leading-snug transition-colors group-hover:text-primary">
+              </div>
+            </Link>
+            </Reveal>
+          )}
+
+          <RevealGroup className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+            {rest.map((post) => (
+              <RevealItem key={post.slug}>
+              <Link to={`/blog/${post.slug}`} className="group relative block pt-6">
+                <span className="absolute inset-x-0 top-0 h-px bg-line" />
+                <span className="absolute left-0 top-0 h-0.5 w-0 bg-primary transition-all duration-500 group-hover:w-full" />
+                <p className="text-sm font-semibold text-moss">{post.category}</p>
+                <h2 className="mt-3 font-heading text-2xl font-semibold leading-snug transition-colors group-hover:text-moss">
                   {post.title}
                 </h2>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                  {post.excerpt}
+                <p className="mt-3 leading-relaxed text-muted-foreground">{post.excerpt}</p>
+                <p className="mt-5 text-sm text-muted-foreground">
+                  {fmt(post.date)} <span className="mx-2 text-foreground/25">|</span> {post.readTime}
                 </p>
-                <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
-                    {new Date(post.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} · {post.readTime}
-                  </span>
-                  <ArrowUpRight size={16} className="text-muted-foreground transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
-                </div>
               </Link>
-            </TiltCard>
-          </ScrollReveal>
-        ))}
-      </div>
-    </section>
-  </Layout>
-);
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+    </Layout>
+  );
+};
 
 export default Blog;

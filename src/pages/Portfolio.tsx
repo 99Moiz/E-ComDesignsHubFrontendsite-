@@ -1,13 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
-import Spotlight from "@/components/motion/Spotlight";
-import FloatingShapes from "@/components/motion/FloatingShapes";
-import TextReveal from "@/components/motion/TextReveal";
-import TiltCard from "@/components/motion/TiltCard";
-import Magnetic from "@/components/motion/Magnetic";
+import PageHeader from "@/components/PageHeader";
+import { RevealGroup, RevealItem } from "@/components/Reveal";
+
 //for live
 const API_BASE = "https://ecomdesignshub.runasp.net";
 //for test
@@ -22,29 +19,34 @@ interface Project {
   projectUrl: string;
 }
 
-const ImageWithSkeleton = ({ src, alt }: { src: string; alt: string }) => {
+const ProjectImage = ({ src, alt }: { src: string; alt: string }) => {
   const [loaded, setLoaded] = useState(false);
-
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
-      {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-surface" />
-      )}
+    <div className="relative aspect-[16/10] overflow-hidden bg-mist">
+      {!loaded && <div className="absolute inset-0 animate-pulse bg-mist" />}
       <img
         src={src}
         alt={alt}
         loading="lazy"
         onLoad={() => setLoaded(true)}
-        style={{ transition: "transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.6s ease" }}
-        className={`h-full w-full object-cover will-change-transform group-hover:scale-[1.06] ${
+        className={`h-full w-full object-cover object-top transition-[transform,opacity] duration-500 ease-out group-hover:scale-[1.03] ${
           loaded ? "opacity-100" : "opacity-0"
         }`}
       />
-      {/* legibility veil */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-background/5 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
     </div>
   );
 };
+
+const SkeletonCard = () => (
+  <div className="overflow-hidden rounded-md border border-line bg-white">
+    <div className="aspect-[16/10] animate-pulse bg-mist" />
+    <div className="space-y-3 p-6">
+      <div className="h-3 w-24 animate-pulse rounded bg-mist" />
+      <div className="h-5 w-2/3 animate-pulse rounded bg-mist" />
+      <div className="h-3 w-full animate-pulse rounded bg-mist" />
+    </div>
+  </div>
+);
 
 const Portfolio = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -52,250 +54,145 @@ const Portfolio = () => {
   const [active, setActive] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reload, setReload] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
+    setLoading(true);
+    setError(null);
 
     const fetchData = async () => {
       try {
         const [projRes, catRes] = await Promise.all([
           fetch(`${API_BASE}/api/ProjectApi/get`),
-          fetch(`${API_BASE}/api/ProjectApi/GetCategory`)
+          fetch(`${API_BASE}/api/ProjectApi/GetCategory`),
         ]);
-
-        if (!projRes.ok || !catRes.ok) {
-          throw new Error("API request failed");
-        }
+        if (!projRes.ok || !catRes.ok) throw new Error("API request failed");
 
         const projData = await projRes.json();
         const catData = await catRes.json();
-
         if (!isMounted) return;
 
         setProjects(projData);
         setCategories(["All", ...catData.map((c: { name: string }) => c.name)]);
       } catch (err) {
         console.error("Portfolio API Error:", err);
-        if (isMounted) setError("Failed to load projects.");
+        if (isMounted) setError("Projects couldn't be loaded. Check your connection and try again.");
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
     fetchData();
-
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [reload]);
 
-  const filteredProjects = useMemo(() => {
-    if (active === "All") return projects;
-    return projects.filter(p => p.categoryName === active);
-  }, [projects, active]);
+  const filteredProjects = useMemo(
+    () => (active === "All" ? projects : projects.filter((p) => p.categoryName === active)),
+    [projects, active]
+  );
 
   return (
     <Layout>
       <SEO
         title="Portfolio"
-        description="Browse selected web design and development projects by E-ComDesignsHub — real work across e-commerce, branding, and custom platforms."
+        description="Browse selected web design and development projects by E-ComDesignsHub across e-commerce, branding, and custom platforms."
         path="/portfolio"
       />
-      {/* ── Hero ───────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-20 md:pt-28 pb-10 px-5 md:px-8">
-        <Spotlight color="var(--primary)" size={620} opacity={0.12} />
-        <FloatingShapes variant="mixed" />
-        <div className="bg-grid-pattern absolute inset-0 opacity-[0.35]" />
+      <PageHeader
+        crumb="Portfolio"
+        title="Selected work."
+        intro="Projects where strategy meets craft, each one built to move a brand forward."
+      />
 
-        <div className="container relative mx-auto">
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="eyebrow mb-6"
-          >
-            <span className="text-accent">/ 04</span> — Selected Work
-          </motion.p>
-
-          <TextReveal
-            as="h1"
-            text="The work speaks first."
-            highlight={["work"]}
-            className="max-w-4xl font-heading text-3xl font-normal leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl"
-          />
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground"
-          >
-            A curated index of projects where strategy meets craft — each one
-            built to move a brand forward.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ── Filters + Grid ─────────────────────────────────────── */}
-      <section className="relative px-5 md:px-8 pb-28">
-        <div className="container relative mx-auto">
-          {/* Filter bar — editorial underlined tabs */}
+      <section className="section">
+        <div className="container">
           {!loading && !error && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="mb-12 flex flex-wrap items-center gap-x-7 gap-y-3 border-b border-line pb-5"
-            >
-              {categories.map(cat => {
-                const isActive = active === cat;
-                return (
-                  <button
-                    key={cat}
-                    onClick={() => setActive(cat)}
-                    className={`relative cursor-hover font-mono text-xs uppercase tracking-[0.15em] transition-colors duration-300 ${
-                      isActive
-                        ? "text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {cat}
-                    {isActive && (
-                      <motion.span
-                        layoutId="portfolioFilterInk"
-                        className="absolute -bottom-[21px] left-0 right-0 h-px bg-primary glow-green-sm"
-                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-              <span className="ml-auto font-mono text-xs text-muted-foreground/70">
-                {String(filteredProjects.length).padStart(2, "0")} projects
-              </span>
-            </motion.div>
-          )}
-
-          {/* Loading */}
-          {loading && (
-            <div className="flex flex-col items-center gap-5 py-24">
-              <img
-                src="/images/logo.jpeg"
-                alt="Loading"
-                className="w-16 rounded-full opacity-90 animate-pulse"
-              />
-              <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                Loading work…
-              </span>
-            </div>
-          )}
-
-          {/* Error */}
-          {error && (
-            <div className="rounded-2xl border border-destructive/30 bg-destructive/5 py-16 text-center text-destructive">
-              {error}
-            </div>
-          )}
-
-          {/* Projects */}
-          {!loading && !error && (
-            <motion.div
-              layout
-              className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8"
-            >
-              <AnimatePresence mode="popLayout">
-                {filteredProjects.map((project, i) => (
-                  <motion.article
-                    key={project.id}
-                    layout
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.94 }}
-                    transition={{
-                      duration: 0.55,
-                      delay: i * 0.05,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                  >
-                    <TiltCard max={5} glare className="h-full">
-                      <a
-                        href={project.projectUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group block h-full rounded-2xl border border-line bg-card p-3 transition-colors duration-500 hover:border-primary/40"
-                      >
-                        <ImageWithSkeleton
-                          src={`${API_BASE}${project.imgUrl}`}
-                          alt={project.title}
-                        />
-
-                        <div className="flex items-start justify-between gap-4 px-3 pb-3 pt-5">
-                          <div>
-                            <div className="mb-3 flex items-center gap-3">
-                              <span className="font-mono text-[11px] text-primary">
-                                {String(i + 1).padStart(2, "0")}
-                              </span>
-                              <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-                                {project.categoryName}
-                              </span>
-                            </div>
-                            <h3 className="font-heading text-xl font-bold leading-tight md:text-2xl">
-                              {project.title}
-                            </h3>
-                            <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                              {project.description}
-                            </p>
-                          </div>
-
-                          <span className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line text-muted-foreground transition-all duration-500 group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground">
-                            <ArrowUpRight
-                              size={16}
-                              className="transition-transform duration-500 group-hover:rotate-45"
-                            />
-                          </span>
-                        </div>
-                      </a>
-                    </TiltCard>
-                  </motion.article>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          )}
-
-          {/* Empty state */}
-          {!loading && !error && filteredProjects.length === 0 && (
-            <div className="py-24 text-center">
-              <p className="font-mono text-sm uppercase tracking-[0.2em] text-muted-foreground">
-                No projects in this category yet.
+            <div className="mb-10 flex flex-col gap-4 border-b border-line md:flex-row md:items-end md:justify-between">
+              <div role="tablist" aria-label="Filter projects" className="-mb-px flex flex-wrap gap-x-7">
+                {categories.map((cat) => {
+                  const isActive = active === cat;
+                  return (
+                    <button
+                      key={cat}
+                      role="tab"
+                      aria-selected={isActive}
+                      onClick={() => setActive(cat)}
+                      className={`border-b-[3px] pb-4 pt-1 text-[0.98rem] font-semibold transition-colors ${
+                        isActive
+                          ? "border-primary text-foreground"
+                          : "border-transparent text-muted-foreground hover:border-line hover:text-foreground"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="pb-4 text-sm text-muted-foreground">
+                Showing {filteredProjects.length} {filteredProjects.length === 1 ? "project" : "projects"}
               </p>
             </div>
           )}
-        </div>
-      </section>
 
-      {/* ── CTA ────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-5 md:px-8 pb-32">
-        <div className="container mx-auto">
-          <div className="relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-16 text-center md:py-24">
-            <Spotlight color="var(--accent)" size={520} opacity={0.1} />
-            <h2 className="mx-auto max-w-2xl font-heading text-2xl font-normal leading-snug sm:text-3xl md:text-4xl">
-              Like what you see? Let's add yours to the list.
-            </h2>
-            <div className="mt-10">
-              <Magnetic>
-                <a
-                  href="/contact"
-                  className="btn-pill"
-                >
-                  Start a project
-                  <span className="btn-pill-arrow">
-                    <ArrowUpRight size={16} />
-                  </span>
-                </a>
-              </Magnetic>
+          {loading && (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
-          </div>
+          )}
+
+          {error && (
+            <div className="rounded-md border border-line bg-mist px-6 py-14 text-center">
+              <p className="font-semibold">{error}</p>
+              <button onClick={() => setReload((n) => n + 1)} className="btn-outline mt-6">
+                <RefreshCw size={16} /> Try again
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && filteredProjects.length > 0 && (
+            <RevealGroup key={active} className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filteredProjects.map((project) => (
+                <RevealItem key={project.id} className="flex">
+                <a
+                  href={project.projectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex w-full flex-col overflow-hidden rounded-md border border-line bg-white transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-foreground/30 hover:shadow-[0_14px_32px_-16px_rgba(27,31,36,0.28)]"
+                >
+                  <ProjectImage src={`${API_BASE}${project.imgUrl}`} alt={project.title} />
+                  <div className="flex flex-1 flex-col p-6">
+                    <p className="text-sm font-semibold text-moss">{project.categoryName}</p>
+                    <h2 className="mt-2 font-heading text-2xl font-semibold leading-tight transition-colors group-hover:text-moss">
+                      {project.title}
+                    </h2>
+                    <p className="mt-2 line-clamp-3 flex-1 leading-relaxed text-muted-foreground">{project.description}</p>
+                    <span className="mt-5 inline-flex items-center gap-1.5 text-[0.95rem] font-semibold text-foreground">
+                      Visit project
+                      <ArrowUpRight
+                        size={16}
+                        className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </div>
+                </a>
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          )}
+
+          {!loading && !error && filteredProjects.length === 0 && (
+            <div className="rounded-md border border-line bg-mist px-6 py-14 text-center">
+              <p className="font-semibold">No projects in this category yet.</p>
+              <button onClick={() => setActive("All")} className="link-arrow mt-3">
+                Show all projects
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </Layout>

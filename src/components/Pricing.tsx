@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { Check, ArrowUpRight } from "lucide-react";
-import ScrollReveal from "@/components/ScrollReveal";
-import TiltCard from "@/components/motion/TiltCard";
-import Magnetic from "@/components/motion/Magnetic";
+import { Check } from "lucide-react";
+import SectionHeading from "@/components/SectionHeading";
+import { RevealGroup, RevealItem } from "@/components/Reveal";
 
 const tiers = [
   {
@@ -45,72 +44,49 @@ const tiers = [
 ];
 
 const Pricing = () => (
-  <section className="section-padding border-t border-line">
-    <div className="container mx-auto">
-      <ScrollReveal>
-        <div className="mb-16 text-center">
-          <p className="eyebrow mb-4">Pricing</p>
-          <h2 className="font-heading text-3xl font-normal leading-[1.1] sm:text-4xl md:text-5xl">
-            Simple, <span className="text-gradient">transparent packages</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-lg text-muted-foreground">
-            Every project is a little different — these are starting points. We'll scope an exact quote on a quick call.
-          </p>
-        </div>
-      </ScrollReveal>
+  <section className="section bg-mist">
+    <div className="container">
+      <SectionHeading
+        align="center"
+        title="Packages and pricing"
+        intro="Every project is a little different, so treat these as starting points. We'll confirm an exact quote after a short call."
+      />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {tiers.map((tier, i) => (
-          <ScrollReveal key={tier.name} delay={i * 0.1}>
-            <TiltCard max={tier.featured ? 0 : 6} className="h-full">
-              <div
-                className={`relative flex h-full flex-col rounded-2xl border p-8 transition-colors duration-300 ${
-                  tier.featured
-                    ? "border-primary/50 bg-primary/[0.04] glow-green-sm"
-                    : "border-line bg-card hover:border-primary/30"
-                }`}
-              >
-                {tier.featured && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-primary-foreground">
-                    Most popular
-                  </span>
-                )}
-                <h3 className="font-heading text-lg font-semibold">{tier.name}</h3>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-heading text-4xl font-normal">{tier.price}</span>
-                  <span className="text-sm text-muted-foreground">/ {tier.period}</span>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
+      <RevealGroup stagger={0.12} className="grid gap-6 md:grid-cols-3">
+        {tiers.map((tier) => (
+          <RevealItem
+            key={tier.name}
+            className={`flex flex-col rounded-md border bg-white p-8 transition-[border-color,transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_24px_44px_-26px_rgba(27,31,36,0.4)] ${
+              tier.featured ? "border-foreground border-t-4 border-t-primary" : "border-line hover:border-foreground/40"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-heading text-2xl font-semibold">{tier.name}</h3>
+              {tier.featured && (
+                <span className="rounded bg-primary px-2.5 py-1 text-xs font-semibold text-foreground">Most popular</span>
+              )}
+            </div>
+            <p className="mt-4 flex items-baseline gap-2">
+              <span className="font-heading text-5xl font-semibold">{tier.price}</span>
+              <span className="text-sm text-muted-foreground">{tier.period}</span>
+            </p>
+            <p className="mt-3 text-muted-foreground">{tier.description}</p>
 
-                <ul className="mt-6 flex-1 space-y-3">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <Check size={16} className="mt-0.5 shrink-0 text-primary" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
+            <ul className="mt-6 flex-1 space-y-3 border-t border-line pt-6">
+              {tier.features.map((f) => (
+                <li key={f} className="flex items-start gap-2.5">
+                  <Check size={17} strokeWidth={2.5} className="mt-0.5 shrink-0 text-moss" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
 
-                <Magnetic strength={12}>
-                  <Link
-                    to="/contact"
-                    className={
-                      tier.featured
-                        ? "btn-pill mt-8 w-full justify-center"
-                        : "btn-pill-outline mt-8 w-full justify-center"
-                    }
-                  >
-                    Get started
-                    <span className="btn-pill-arrow">
-                      <ArrowUpRight size={15} />
-                    </span>
-                  </Link>
-                </Magnetic>
-              </div>
-            </TiltCard>
-          </ScrollReveal>
+            <Link to="/contact" className={`mt-8 w-full ${tier.featured ? "btn-primary" : "btn-outline"}`}>
+              {tier.price === "Custom" ? "Request a quote" : `Choose ${tier.name}`}
+            </Link>
+          </RevealItem>
         ))}
-      </div>
+      </RevealGroup>
     </div>
   </section>
 );
