@@ -1,12 +1,31 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight, Star, Quote, Mail, MapPin, Clock, Globe, Palette, TrendingUp, Code } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Star,
+  Quote,
+  Mail,
+  MapPin,
+  Clock,
+  Globe,
+  Palette,
+  TrendingUp,
+  Code,
+  Check,
+  Users,
+  Gauge,
+  ShieldCheck,
+  Headphones,
+} from "lucide-react";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
 import SectionHeading from "@/components/SectionHeading";
 import ReviewBadge from "@/components/ReviewBadge";
 import LogoMarquee from "@/components/LogoMarquee";
 import ContactForm from "@/components/ContactForm";
+import Pricing from "@/components/Pricing";
+import FAQ from "@/components/FAQ";
 import HeroSlider from "@/components/home/HeroSlider";
 import { Reveal, RevealGroup, RevealItem, CountUp } from "@/components/Reveal";
 import { SITE, serviceGroups } from "@/lib/site";
@@ -26,6 +45,35 @@ const processSteps = [
   { title: "Design", description: "Our designers create mockups and prototypes you can review and refine before anything is built." },
   { title: "Develop", description: "We build your project on modern tech stacks, with performance and scalability in mind." },
   { title: "Deliver", description: "We launch your project and provide ongoing support to keep it running well." },
+];
+
+const reasons = [
+  { icon: Users, title: "One team, start to finish", description: "Strategy, design, development and marketing under one roof, so nothing gets lost between agencies." },
+  { icon: Gauge, title: "Built for speed", description: "Lean code, optimised images and good hosting choices keep pages fast on every device." },
+  { icon: ShieldCheck, title: "Secure by default", description: "SSL, regular updates, backups and security hardening are part of every build, not an add-on." },
+  { icon: Headphones, title: "Support after launch", description: "We stay on after go-live for updates, fixes and improvements as your business grows." },
+];
+
+const promises = [
+  "A clear quote and timeline before any work starts",
+  "Weekly progress updates and a single point of contact",
+  "Designs you approve before development begins",
+  "Full ownership of your site, content and accounts",
+];
+
+const platforms = [
+  { name: "Shopify", category: "E-commerce" },
+  { name: "WooCommerce", category: "E-commerce" },
+  { name: "WordPress", category: "CMS" },
+  { name: "Webflow", category: "CMS" },
+  { name: "React", category: "Front-end" },
+  { name: "Next.js", category: "Front-end" },
+  { name: ".NET", category: "Back-end" },
+  { name: "Node.js", category: "Back-end" },
+  { name: "Figma", category: "Design" },
+  { name: "Adobe CC", category: "Design" },
+  { name: "Google Analytics", category: "Analytics" },
+  { name: "Meta Ads", category: "Marketing" },
 ];
 
 const testimonials = [
@@ -229,6 +277,48 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Why choose us */}
+      <section className="section bg-graphite text-white">
+        <div className="container grid gap-14 lg:grid-cols-12 lg:gap-10">
+          <Reveal className="lg:col-span-5">
+            <h2 className="heading-bar font-heading text-3xl font-semibold text-white sm:text-4xl md:text-[2.75rem]">
+              Why businesses choose us
+            </h2>
+            <p className="mt-5 max-w-md text-[1.05rem] leading-relaxed text-white/70">
+              We keep projects simple to run and easy to follow, so you always know what is being built, when it will
+              be ready and what it will cost.
+            </p>
+            <ul className="mt-8 space-y-4">
+              {promises.map((p) => (
+                <li key={p} className="flex items-start gap-3">
+                  <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary text-foreground">
+                    <Check size={13} strokeWidth={3} />
+                  </span>
+                  <span className="text-white/85">{p}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/contact" className="btn-primary mt-10">
+              Start your project <ArrowRight size={17} />
+            </Link>
+          </Reveal>
+          <RevealGroup stagger={0.1} className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+            {reasons.map(({ icon: Icon, title, description }) => (
+              <RevealItem
+                key={title}
+                className="group rounded-md border border-graphite-line p-7 transition-colors duration-300 hover:border-primary"
+              >
+                <span className="grid h-12 w-12 place-items-center rounded-md bg-white/10 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-foreground">
+                  <Icon size={22} />
+                </span>
+                <h3 className="mt-6 font-heading text-2xl font-semibold text-white">{title}</h3>
+                <p className="mt-3 leading-relaxed text-white/65">{description}</p>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
       <FeaturedWork />
 
       {/* Process */}
@@ -247,6 +337,28 @@ const Index = () => {
                 <span className="font-heading text-lg font-semibold text-moss">Step {i + 1}</span>
                 <h3 className="mt-2 font-heading text-2xl font-semibold">{step.title}</h3>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{step.description}</p>
+              </RevealItem>
+            ))}
+          </RevealGroup>
+        </div>
+      </section>
+
+      {/* Platforms */}
+      <section className="section border-t border-line">
+        <div className="container">
+          <SectionHeading
+            split
+            title="Platforms and tools we work with"
+            intro="We pick the stack that fits your goals and budget, not the other way around."
+          />
+          <RevealGroup stagger={0.05} className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {platforms.map((p) => (
+              <RevealItem
+                key={p.name}
+                className="rounded-md border border-line px-5 py-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-foreground"
+              >
+                <p className="font-heading text-xl font-semibold">{p.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{p.category}</p>
               </RevealItem>
             ))}
           </RevealGroup>
@@ -320,6 +432,10 @@ const Index = () => {
           </RevealGroup>
         </div>
       </section>
+
+      <Pricing />
+
+      <FAQ />
 
       {/* Careers band */}
       <section className="bg-primary">
