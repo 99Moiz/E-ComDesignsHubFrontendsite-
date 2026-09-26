@@ -2,16 +2,22 @@ import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { SITE } from "@/lib/site";
 
+/** Set to true to show the floating WhatsApp button again. */
+const SHOW_WHATSAPP_BUTTON = false;
+
 /** WhatsApp shortcut, fixed bottom-right. Appears once the visitor scrolls past the hero. */
 const FloatingActions = () => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    if (!SHOW_WHATSAPP_BUTTON) return;
     const onScroll = () => setVisible(window.scrollY > 480);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  if (!SHOW_WHATSAPP_BUTTON) return null;
 
   return (
     <a
