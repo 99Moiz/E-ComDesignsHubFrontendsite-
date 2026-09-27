@@ -76,6 +76,41 @@ const platforms = [
   { name: "Meta Ads", category: "Marketing" },
 ];
 
+/**
+ * One infinitely scrolling row of platform cards. Each half holds the list twice so it stays wider
+ * than large screens, and the half is rendered twice so translating by 50% loops seamlessly.
+ */
+const PlatformRow = ({ items, reverse = false }: { items: typeof platforms; reverse?: boolean }) => (
+  <div className="group relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+    <div
+      className={`flex w-max group-hover:[animation-play-state:paused] ${
+        reverse ? "animate-marquee-reverse" : "animate-marquee"
+      }`}
+      style={{ animationDuration: "60s" }}
+    >
+      {[0, 1].map((copy) => (
+        <ul key={copy} className="flex shrink-0 gap-4 pr-4">
+          {[...items, ...items].map((p, i) => (
+            <li
+              key={`${p.name}-${i}`}
+              aria-hidden={copy === 1 || i >= items.length}
+              className="flex w-60 shrink-0 items-center gap-4 rounded-md border border-line bg-white px-5 py-5 transition-[border-color,box-shadow] duration-300 hover:border-foreground hover:shadow-[0_16px_32px_-24px_rgba(27,31,36,0.45)]"
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-mist font-heading text-lg font-semibold text-moss">
+                {p.name.replace(/[^A-Za-z]/g, "").charAt(0)}
+              </span>
+              <span>
+                <span className="block font-heading text-xl font-semibold">{p.name}</span>
+                <span className="mt-0.5 block text-sm text-muted-foreground">{p.category}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+);
+
 const testimonials = [
   { name: "Sarah M.", role: "E-commerce Owner", quote: "E-ComDesignsHub transformed our online store completely. Sales increased by 150% within the first quarter!" },
   { name: "James K.", role: "Startup Founder", quote: "Professional, creative, and incredibly responsive. They delivered beyond our expectations on every milestone." },
@@ -351,18 +386,11 @@ const Index = () => {
             title="Platforms and tools we work with"
             intro="We pick the stack that fits your goals and budget, not the other way around."
           />
-          <RevealGroup stagger={0.05} className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {platforms.map((p) => (
-              <RevealItem
-                key={p.name}
-                className="rounded-md border border-line px-5 py-6 transition-[border-color,transform] duration-300 hover:-translate-y-1 hover:border-foreground"
-              >
-                <p className="font-heading text-xl font-semibold">{p.name}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{p.category}</p>
-              </RevealItem>
-            ))}
-          </RevealGroup>
         </div>
+        <Reveal className="flex flex-col gap-4">
+          <PlatformRow items={platforms.slice(0, 6)} />
+          <PlatformRow items={platforms.slice(6)} reverse />
+        </Reveal>
       </section>
 
       {/* Testimonials */}
